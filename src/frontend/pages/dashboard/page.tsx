@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import ItemForm from "@/frontend/components/items/ItemForm";
 import ItemList from "@/frontend/components/items/ItemList";
 import Filters from "@/frontend/components/dashboard/Filters";
 import { Status, ItemDTO } from "@/types";
 
 export default function DashboardContent() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [items, setItems] = useState<ItemDTO[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useState({
@@ -16,6 +18,15 @@ export default function DashboardContent() {
     tag: undefined as string | undefined,
     minScore: undefined as string | undefined,
   });
+
+  // Oturum kontrolü
+  useEffect(() => {
+    console.log("Dashboard oturum durumu:", status, session);
+    if (status === "unauthenticated") {
+      console.log("Oturum yok, giriş sayfasına yönlendiriliyor");
+      router.push("/auth/signin");
+    }
+  }, [status, router, session]);
 
   // Öğeleri getir
   useEffect(() => {
@@ -39,8 +50,11 @@ export default function DashboardContent() {
       }
     };
 
-    fetchItems();
-  }, [searchParams]);
+    // Sadece oturum varsa verileri getir
+    if (status === "authenticated") {
+      fetchItems();
+    }
+  }, [searchParams, status]);
 
   // Filtre değişikliklerini işle
   const handleFilterChange = (filters: {
@@ -55,8 +69,13 @@ export default function DashboardContent() {
   };
 
   // Yükleniyor durumu
-  if (isLoading) {
-    return <div className="flex min-h-screen items-center justify-center">Loading items...</div>;
+  if (status === "loading" || isLoading) {
+    return <div className="flex min-h-screen items-center justify-center">Loading...</div>;
+  }
+
+  // Oturum yoksa boş sayfa göster (zaten yönlendirme yapılacak)
+  if (status === "unauthenticated") {
+    return <div className="flex min-h-screen items-center justify-center">Redirecting to login...</div>;
   }
 
   return (

@@ -79,18 +79,30 @@ export const authOptions: NextAuthOptions = {
       }
     }),
   ],
-  session: { strategy: "database" },
+  session: { 
+    strategy: "jwt", // "database" yerine "jwt" kullanın
+    maxAge: 30 * 24 * 60 * 60, // 30 gün
+  },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/auth/signin",
   },
   callbacks: {
-    async session({ session, user }) {
-      if (session.user && user?.id) {
-        (session.user as any).id = user.id;
+    async jwt({ token, user }) {
+      // Userıcı bilgilerini token'a ekle
+      if (user) {
+        token.userId = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      // Token'daki bilgileri session'a ekle
+      if (session.user) {
+        (session.user as any).id = token.userId;
       }
       return session;
     },
   },
-  debug: true, // Hata ayıklama modunu etkinleştir
+  debug: process.env.NODE_ENV !== "production", // Sadece geliştirme ortamında hata ayıklama modu etkinleştir
 };
