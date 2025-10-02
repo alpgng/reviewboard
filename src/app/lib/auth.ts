@@ -2,10 +2,8 @@ import NextAuth, { type NextAuthOptions } from "next-auth";
 import GitHub from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-
-const prisma = new PrismaClient();
+import { prisma } from "./prisma"; // Ortak Prisma istemcisini kullan
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
