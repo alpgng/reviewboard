@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  /* Sage renk paleti */
+  --color-sage-900: #6b9080;
+  --color-sage-700: #a4c3b2;
+  --color-sage-500: #cce3de;
+  --color-sage-300: #eaf4f4;
+  --color-sage-100: #f6fff8;
+  --color-text-black: #000000;
+  
+  /* Doğrudan erişim için kısayollar */
+  --color-sage-dark: #6b9080;
+  --color-sage-medium: #a4c3b2;
+  --color-sage-light: #cce3de;
+  --color-sage-pale: #eaf4f4;
+  --color-sage-white: #f6fff8;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--color-sage-white);
+  color: var(--color-sage-dark);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Reusable UI components */
+@layer components {
+  
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium transition;
+  }
+  .btn-primary {
+    @apply bg-[color:var(--color-sage-dark)] text-white shadow hover:opacity-90 ; 
+  }
+  .btn-secondary {
+    @apply bg-[color:var(--color-sage-light)] text-[color:var(--color-sage-dark)] border border-[color:var(--color-sage-light)] hover:bg-[color:var(--color-sage-light)];
+  }
+  .btn-ghost {
+    @apply text-[color:var(--color-sage-dark)] hover:bg-[color:var(--color-sage-pale)];
+  }
+
+  /* Input */
+  .input {
+    @apply w-full rounded-xl border border-[color:var(--color-sage-dark)] bg-white px-3 py-2 text-sm outline-none;
+    @apply focus:ring-2 focus:ring-[color:var(--color-sage-dark)];
+  }
+
+  /* Select */
+  .select {
+    @apply w-full rounded-xl border border-[color:var(--color-sage-light)] bg-white px-3 py-2 text-sm outline-none;
+    @apply focus:ring-2 focus:ring-[color:var(--color-sage-medium)];
+  }
+  
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+  .badge-new       { @apply bg-[color:var(--color-sage-pale)] text-[color:var(--color-sage-dark)]; }
+  .badge-inreview  { @apply bg-amber-100 text-amber-900; }
+  .badge-approved  { @apply bg-green-100 text-green-800; }
+  .badge-rejected  { @apply bg-red-100 text-red-800; }
+
+  .card            { @apply rounded-2xl border bg-white shadow-sm; }
+  .table           { @apply w-full text-left text-sm; }
+  .thead           { @apply bg-[color:var(--color-sage-pale)]; }
+  .th              { @apply px-4 py-3 font-medium text-[color:var(--color-sage-dark)]; }
+  .td              { @apply px-4 py-3; }
+  .tr              { @apply border-t border-[color:var(--color-sage-light)]; }
+  .empty           { @apply rounded-2xl border bg-white p-6 text-center text-sm text-[color:var(--color-sage-medium)]; }
+
+  .filters         { @apply flex flex-wrap items-end gap-3; }
+  .filters-label   { @apply mb-1 block text-sm font-medium; }
+  .link            { @apply text-sm underline text-[color:var(--color-sage-dark)] hover:text-[color:var(--color-sage-medium)]; }
 }
