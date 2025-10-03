@@ -66,6 +66,14 @@ export async function POST(req: Request) {
       risk_score, // Risk score'u ekle
     },
   });
+  
+  await prisma.audit.create({
+    data: {
+      action: "Item created",
+      userId: (session.user as any).id,
+      itemId: item.id,
+    },
+  });
 
   return NextResponse.json(item, { status: 201 });
 }
